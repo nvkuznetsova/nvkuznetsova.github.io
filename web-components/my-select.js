@@ -6,13 +6,15 @@ class MySelect extends HTMLElement {
   #shadow;
   #optionsList = [];
   #filtered = [];
+  #selected = [];
+  #searchSelector = '.select-popup-search';
 
   constructor() {
     super();
     console.log('My Select element!');
   }
 
-  static observedAttributes = ['options'];
+  static observedAttributes = ['options', 'search-selector'];
 
   connectedCallback() {
     console.log('Element connected');
@@ -41,15 +43,26 @@ class MySelect extends HTMLElement {
           this.#filtered = [];
         }
         break;
+      case 'search-selector': {
+        this.#searchSelector = newValue || this.#searchSelector;
+        break;
+      }
       default:
         break;
     }
   }
 
   #openPopup = () => {
-    console.log(this.#selectPopup);
     if (this.#selectPopup) {
       this.#selectPopup.classList.toggle('open');
+    }
+  }
+
+  #filterOptions = (evt) => {
+    if (this.#selectPopupSearch) {
+      const search = evt.target.value.toLowerCase();
+      this.#filtered = this.#optionsList.filter((option) => option.toLowerCase().includes(search));
+      this.#renderOptions();
     }
   }
 
@@ -105,14 +118,16 @@ class MySelect extends HTMLElement {
 
     this.#selectButton = this.#shadow.querySelector('.select-button');
     this.#selectPopup = this.#shadow.querySelector('.select-popup');
-    this.#selectPopupSearch = this.#shadow.querySelector('.select-popup-search');
+    this.#selectPopupSearch = this.#shadow.querySelector(this.#searchSelector) || this.querySelector(this.#searchSelector);;
     this.#optionsBox = this.#shadow.querySelector('.select-popup-options');
-    this.#selectButton.addEventListener('click', this.#openPopup)
+    this.#selectButton.addEventListener('click', this.#openPopup);
+    this.#selectPopupSearch.addEventListener('input', this.#filterOptions);
     this.#renderOptions();
   }
 
   #renderOptions() {
     if (this.#optionsBox) {
+      this.#optionsBox.innerHTML = '';
       this.#filtered.forEach((option) => {
         const label = document.createElement('label');
         const checkbox = document.createElement('input');

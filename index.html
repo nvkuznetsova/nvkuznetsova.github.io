@@ -19,6 +19,7 @@
             const search = document.createElement('div');
             const input = document.createElement('input');
             mySelect.setAttribute('options', JSON.stringify(pokemons));
+            mySelect.setAttribute('search-selector', '.light-search');
             input.classList.add('light-search');
             input.setAttribute('placeholder', 'Search pokemons...');
             search.setAttribute('slot', 'search');
