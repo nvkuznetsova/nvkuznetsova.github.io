@@ -6,6 +6,43 @@
     <title>JS course</title>
 </head>
 <body>
-    
+    <script>
+        const getPokemons = async () => {
+            const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20');
+            const { results } = await response.json();
+            return results.map(({ name }) => name);
+        }
+
+        const onLoad = async (evt) => {
+            const pokemons = await getPokemons();
+            const mySelect = document.createElement('my-select');
+            const search = document.createElement('div');
+            const input = document.createElement('input');
+            mySelect.setAttribute('options', JSON.stringify(pokemons));
+            mySelect.setAttribute('search-selector', '.light-search');
+            input.classList.add('light-search');
+            input.setAttribute('placeholder', 'Search pokemons...');
+            search.setAttribute('slot', 'search');
+
+            search.append(input);
+            mySelect.append(search);
+            document.body.appendChild(mySelect);
+        }
+       
+        const onError = (err) => {
+            console.error('Error: ', err);
+        }
+       
+        const components = ['my-select'];
+       
+        components.forEach((component) =>{
+          const script = document.createElement('script');
+          script.src = `./web-components/${component}.js`;
+          script.dataset.name = component;
+          script.addEventListener('load', onLoad);
+          script.addEventListener('error', onError);
+          document.body.append(script);
+        });
+    </script>
 </body>
 </html>
