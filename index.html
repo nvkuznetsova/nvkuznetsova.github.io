@@ -18,14 +18,18 @@
             const mySelect = document.createElement('my-select');
             const search = document.createElement('div');
             const input = document.createElement('input');
-            mySelect.setAttribute('options', JSON.stringify(pokemons));
-            mySelect.setAttribute('search-selector', '.light-search');
             input.classList.add('light-search');
             input.setAttribute('placeholder', 'Search pokemons...');
             search.setAttribute('slot', 'search');
 
             search.append(input);
             mySelect.append(search);
+
+            pokemons.forEach((pokemon) => {
+                const option = document.createElement('option');
+                option.textContent = pokemon;
+                mySelect.append(option);
+            });
             document.body.appendChild(mySelect);
         }
        
